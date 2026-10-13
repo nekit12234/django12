@@ -1,0 +1,24 @@
+{% extends 'library/base.html' %}
+
+{% block title %}Книги — Библиотека{% endblock %}
+
+{% block content %}
+    <h1>Книги</h1>
+
+    {% for book in books %}
+        <div class="card">
+            <h2>
+                <a href="{% url 'library:book_detail' book.slug %}">
+                    {{ book.title }}
+                </a>
+            </h2>
+            <p class="meta">
+                {{ book.author }} · {{ book.publication_year }} · {{ book.price }} ₽
+            </p>
+        </div>
+    {% empty %}
+        <div class="empty">
+            <p>Пока ничего нет</p>
+        </div>
+    {% endfor %}
+{% endblock %}
