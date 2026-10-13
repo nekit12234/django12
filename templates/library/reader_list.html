@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} — Библиотека{% endblock %}
+
+{% block content %}
+    <h1 class="mb-2">{{ title }}</h1>
+    <p class="text-muted">Всего читателей: {{ total_count }}</p>
+
+    {% if readers %}
+        <div class="table-responsive">
+            <table class="table table-striped align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ФИО</th>
+                        <th>Email</th>
+                        <th>Телефон</th>
+                        <th>Номер билета</th>
+                        <th>Дата регистрации</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reader in readers %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'library:reader_detail' reader.pk %}">
+                                    {{ reader.user.get_full_name|default:reader.user.username }}
+                                </a>
+                            </td>
+                            <td>
+                                {% if reader.user.email %}
+                                    <a href="mailto:{{ reader.user.email }}">{{ reader.user.email }}</a>
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td>{% if reader.phone %}{{ reader.phone }}{% else %}—{% endif %}</td>
+                            <td>
+                                {% if reader.library_card_number %}
+                                    {{ reader.library_card_number }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td>{{ reader.created_at|date:"d.m.Y" }}</td>
+                            <td>
+                                <a
+                                    href="{% url 'library:reader_detail' reader.pk %}"
+                                    class="btn btn-sm btn-outline-primary"
+                                >
+                                    Подробнее
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">Читателей пока нет.</div>
+    {% endif %}
+{% endblock %}
