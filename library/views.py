@@ -1,8 +1,8 @@
-from django.shortcuts import render, get_object_or_404
 from django.db.models import Count
+from django.shortcuts import render, get_object_or_404, redirect
 
-from django.shortcuts import redirect
 from .models import Author, Book
+from accounts.models import Profile
 
 def book_list(request):
     """Список доступных книг."""
@@ -58,3 +58,18 @@ def about(request):
 def index(request):
     """Редирект с корня сайта на список книг."""
     return redirect('library:book_list')
+def reader_list(request):
+    readers = (
+        Profile.objects
+        .select_related('user')
+        .order_by('user__last_name', 'user__first_name')
+    )
+    return render(request, 'library/reader_list.html', {'readers': readers})
+
+
+def reader_detail(request, pk):
+    reader = get_object_or_404(
+        Profile.objects.select_related('user'),
+        pk=pk,
+    )
+    return render(request, 'library/reader_detail.html', {'reader': reader})
